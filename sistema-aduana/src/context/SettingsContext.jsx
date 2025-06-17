@@ -1,5 +1,5 @@
 // src/context/SettingsContext.jsx
-import { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 export const SettingsContext = createContext();
 
@@ -8,7 +8,7 @@ export const SettingsProvider = ({ children }) => {
   const [scale, setScale] = useState(1);
   const [contrast, setContrast] = useState(1);
 
-  // Carga inicial desde localStorage, si existe
+  // Carga inicial desde localStorage
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('settings'));
     if (stored) {
@@ -18,19 +18,12 @@ export const SettingsProvider = ({ children }) => {
     }
   }, []);
 
-  // Aplica cambios de tema, escala y contraste
+  // Aplica tema, escala y contraste a <html>
   useEffect(() => {
-    // añade/quita la clase 'dark' del <html>
     document.documentElement.classList.toggle('dark', darkMode);
-    // escala global de fuente
     document.documentElement.style.fontSize = `${16 * scale}px`;
-    // contraste global
     document.documentElement.style.filter = `contrast(${contrast})`;
-    // guarda en localStorage
-    localStorage.setItem(
-      'settings',
-      JSON.stringify({ darkMode, scale, contrast })
-    );
+    localStorage.setItem('settings', JSON.stringify({ darkMode, scale, contrast }));
   }, [darkMode, scale, contrast]);
 
   return (

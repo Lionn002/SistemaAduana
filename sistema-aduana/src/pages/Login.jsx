@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { users } from '../data/users';
@@ -15,11 +14,15 @@ const Login = () => {
       alert('Credenciales incorrectas');
       return;
     }
-    if (user.role === 'admin') {
-      return navigate('/admin-code', { state: { user } });
-    }
+    // Guardar usuario en localStorage
     localStorage.setItem('user', JSON.stringify(user));
-    navigate('/usuario');
+
+    // Redirigir según rol
+    if (['PDI', 'SAG', 'ADUANA'].includes(user.role)) {
+      navigate('/admin-code', { state: { user } });
+    } else {
+      navigate('/usuario', { state: { user } });
+    }
   };
 
   const handleSubmit = e => {
@@ -44,20 +47,20 @@ const Login = () => {
 
         <div className="space-y-4">
           <input
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-secondary"
             type="text"
             placeholder="RUT"
             value={rut}
             onChange={e => setRut(e.target.value)}
             required
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-secondary"
           />
           <input
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-secondary"
             type="password"
             placeholder="Contraseña"
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-secondary"
           />
           <button
             type="submit"

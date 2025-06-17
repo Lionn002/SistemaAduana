@@ -1,4 +1,3 @@
-// src/data/users.js
 export const users = [
   {
     rut: '11111111-1',
@@ -7,21 +6,27 @@ export const users = [
     name: 'María José González Martínez'
   },
   {
-    rut: '33333333-3',
+    rut: '22222222-2',
     password: 'usuario456',
     role: 'usuario',
     name: 'Fernanda Alejandra Ramírez Soto'
   },
   {
-    rut: '22222222-2',
-    password: 'admin123',
-    role: 'admin',
-    name: 'Juan Carlos Rodríguez Pérez'
+    rut: '33333333-3',
+    password: 'pdi123',
+    role: 'PDI',
+    name: 'Inspector Pablo Acevedo Salas'
   },
   {
     rut: '44444444-4',
-    password: 'admin456',
-    role: 'admin',
-    name: 'Carlos Alberto Díaz Fernández'
+    password: 'sag123',
+    role: 'SAG',
+    name: 'Técnico Claudia Muñoz Vargas'
+  },
+  {
+    rut: '55555555-5',
+    password: 'aduana123',
+    role: 'ADUANA',
+    name: 'Oficial Andrés Fuentes Rojas'
   }
 ];
