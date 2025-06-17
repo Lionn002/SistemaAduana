@@ -1,35 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route } from 'react-router-dom';
+
+import Login from './pages/Login';
+import AdminCode from './pages/AdminCode';
+import AdminDashboard from './pages/AdminDashboard';
+import ProtectedRoute from './routes/ProtectedRoute';
+
+// Layout de usuario
+import UserLayout from './pages/user/UserLayout';
+
+// Páginas de usuario
+import UserDashboard from './pages/user/UserDashboard';
+import NewDocument from './pages/user/NewDocument';
+import DeclarationForm from './pages/user/DeclarationForm';
+import VehicleValidation from './pages/user/VehicleValidation';
+import StatusCheck from './pages/user/StatusCheck';
+import Alerts from './pages/user/Alerts';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/admin-code" element={<AdminCode />} />
+
+      {/* Rutas protegidas de usuario */}
+      <Route
+        path="/usuario/*"
+        element={
+          <ProtectedRoute role="usuario">
+            <UserLayout />
+          </ProtectedRoute>
+        }
+      >
+        {/* Ruta por defecto: Dashboard */}
+        <Route index element={<UserDashboard />} />
+        <Route path="nueva-declaracion" element={<NewDocument />} />
+        <Route path="formulario-jurada" element={<DeclarationForm />} />
+        <Route path="validacion-vehiculo" element={<VehicleValidation />} />
+        <Route path="consulta-estado" element={<StatusCheck />} />
+        <Route path="alertas" element={<Alerts />} />
+      </Route>
+
+      {/* Ruta protegida de admin */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute role="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
