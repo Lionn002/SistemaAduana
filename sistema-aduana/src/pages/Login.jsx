@@ -16,28 +16,31 @@ const Login = () => {
       return;
     }
     if (user.role === 'admin') {
-      navigate('/admin-code', { state: { user } });
-      return;
+      return navigate('/admin-code', { state: { user } });
     }
     localStorage.setItem('user', JSON.stringify(user));
     navigate('/usuario');
   };
 
+  const handleSubmit = e => {
+    e.preventDefault();
+    handleLogin();
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-secondary">
-      <div className="bg-white rounded-3xl shadow-xl p-8 max-w-sm w-full mx-4">
-        <div className="flex flex-col items-center mb-6">
-          {/* Solo agranda el logo: w-80 → w-96 para hacerlo aún más grande */}
-          <img
-            src={logo}
-            alt="Logo Aduanas"
-            className="w-96 h-auto mb-4"
-          />
-          {/* Texto más discreto */}
-          <h1 className="text-lg font-semibold text-primary">
-            Servicio Nacional de Aduanas
-          </h1>
+    <div className="min-h-screen bg-gradient-to-br from-primary to-secondary flex flex-col items-center justify-center p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 max-w-sm w-full mx-auto"
+      >
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <img src={logo} alt="Logo Aduanas" className="w-56 h-auto" />
         </div>
+
+        <h1 className="text-lg font-semibold text-primary text-center mb-6">
+          Servicio Nacional de Aduanas
+        </h1>
 
         <div className="space-y-4">
           <input
@@ -46,6 +49,7 @@ const Login = () => {
             placeholder="RUT"
             value={rut}
             onChange={e => setRut(e.target.value)}
+            required
           />
           <input
             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-secondary"
@@ -53,34 +57,21 @@ const Login = () => {
             placeholder="Contraseña"
             value={password}
             onChange={e => setPassword(e.target.value)}
+            required
           />
           <button
-            onClick={handleLogin}
-            className="
-              w-full 
-              bg-green-600 
-              text-white 
-              font-bold 
-              text-base 
-              rounded-lg 
-              py-3 
-              shadow-lg 
-              transition-colors 
-              duration-200 
-              hover:bg-green-700
-            "
+            type="submit"
+            className="w-full bg-secondary text-white font-bold py-3 rounded-lg hover:bg-secondary/90 transition"
           >
             Ingresar
           </button>
         </div>
+      </form>
 
-        <p className="mt-4 text-center text-sm text-gray-500">
-          ¿Olvidaste tu contraseña?{' '}
-          <a href="#" className="text-primary hover:underline">
-            Recupérala aquí
-          </a>
-        </p>
-      </div>
+      {/* Footer */}
+      <footer className="mt-8 text-center text-white text-sm">
+        © 2025 Servicio Nacional de Aduanas. Todos los derechos reservados.
+      </footer>
     </div>
   );
 };

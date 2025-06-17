@@ -1,51 +1,92 @@
 // src/pages/AdminCode.jsx
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import logo from '../assets/logo_aduanas_chile.png';
 
 const AdminCode = () => {
-  const { state } = useLocation();            // recibe { user }
+  const { state } = useLocation();
   const navigate = useNavigate();
-  const [inputCode, setInputCode] = useState("");
-  const [generatedCode, setGeneratedCode] = useState("");
+  const user = state?.user;
+
+  const [inputCode, setInputCode] = useState('');
+  const [generatedCode, setGeneratedCode] = useState('');
 
   useEffect(() => {
-    if (!state?.user || state.user.role !== "admin") {
-      // si no venimos desde login o no es admin, volvemos al login
-      return navigate("/");
+    if (!user || user.role !== 'admin') {
+      return navigate('/');
     }
-    // Generar el código solo una vez al montar
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log("Código admin generado:", code);
+    console.log('Código admin generado:', code);
     setGeneratedCode(code);
-  }, [state, navigate]);
+  }, [user, navigate]);
 
   const handleVerify = () => {
-    if (inputCode !== generatedCode) {
-      return alert("Código de administrador incorrecto");
+    if (inputCode === generatedCode) {
+      navigate('/admin');
+    } else {
+      alert('Código incorrecto, inténtalo de nuevo');
     }
-    // guardamos sesión definitiva
-    localStorage.setItem("user", JSON.stringify(state.user));
-    navigate("/admin");
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 gap-4 p-4">
-      <h1 className="text-2xl font-bold">Verificación Admin</h1>
-      <p>Hemos enviado un código de 6 dígitos a la consola. Pégalo aquí:</p>
-      <input
-        type="text"
-        maxLength={6}
-        className="border px-4 py-2 w-48 text-center"
-        placeholder="Código de administrador"
-        value={inputCode}
-        onChange={e => setInputCode(e.target.value)}
-      />
-      <button
-        className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-        onClick={handleVerify}
+    <div className="min-h-screen bg-gradient-to-br from-primary to-secondary flex flex-col items-center justify-center p-4">
+      <div
+        className="
+          bg-white dark:bg-gray-800
+          rounded-3xl shadow-2xl 
+          p-8 max-w-md w-full mx-auto
+        "
       >
-        Verificar
-      </button>
+        {/* Logo aumentado */}
+        <div className="flex justify-center mb-6">
+          <img src={logo} alt="Logo Aduanas" className="w-56 h-auto" />
+        </div>
+
+        {/* Bienvenida con nombre */}
+        <h1 className="text-2xl font-semibold text-primary dark:text-secondary text-center mb-2">
+          Bienvenido, {user?.name}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-300 text-center mb-6">
+          Verificación de funcionario
+        </p>
+
+        {/* Simulación de envío de SMS */}
+        <p className="text-gray-500 dark:text-gray-400 text-sm text-center mb-4">
+          Se ha enviado un SMS al teléfono registrado. Introduce el código recibido.
+        </p>
+
+        {/* Input código */}
+        <input
+          type="text"
+          maxLength={6}
+          placeholder="Código de verificación"
+          value={inputCode}
+          onChange={e => setInputCode(e.target.value)}
+          className="
+            w-full text-center
+            border border-gray-300 dark:border-gray-600
+            rounded-lg px-4 py-2 mb-4
+            focus:outline-none focus:ring-2 focus:ring-secondary
+          "
+        />
+
+        {/* Botón verificar */}
+        <button
+          onClick={handleVerify}
+          className="
+            w-full bg-secondary text-white
+            font-bold py-2 rounded-lg
+            hover:bg-secondary/90 transition
+          "
+        >
+          Verificar
+        </button>
+      </div>
+
+      {/* Footer con texto blanco */}
+      <footer className="mt-8 text-center text-white text-sm">
+        © 2025 Servicio Nacional de Aduanas. Todos los derechos reservados.
+      </footer>
     </div>
   );
 };
