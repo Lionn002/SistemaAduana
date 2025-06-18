@@ -1,23 +1,29 @@
 // src/layouts/FuncionarioLayout.jsx
 import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Home, FileText, ClipboardList, Settings, LogOut, Clock } from 'lucide-react';
+import {
+  Home,
+  FileText,
+  ClipboardList,
+  Settings,
+  LogOut,
+  Clock,
+  Car,
+  QrCode
+} from 'lucide-react';
 import logo from '../assets/logo_aduanas_chile.png';
 
 export default function FuncionarioLayout() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
-  const user = state?.user || storedUser;
+  const user = state?.user || JSON.parse(localStorage.getItem('user') || 'null');
   const [now, setNow] = useState(new Date());
 
-  // Reloj
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Verificar rol
   useEffect(() => {
     if (!user || !['PDI','SAG','ADUANA'].includes(user.role)) {
       navigate('/');
@@ -26,16 +32,20 @@ export default function FuncionarioLayout() {
 
   const sectionsByRole = {
     PDI: [
+      { label: 'Registro de Personas', to: 'registro-persona', icon: ClipboardList },
       { label: 'Inspecciones', to: 'inspecciones', icon: Home },
       { label: 'Reportes PDI', to: 'reportes-pdi', icon: ClipboardList }
     ],
     SAG: [
+      { label: 'Registro de Personas', to: 'registro-persona', icon: ClipboardList },
       { label: 'Certificaciones', to: 'certificaciones', icon: Home },
       { label: 'Reportes SAG', to: 'reportes-sag', icon: ClipboardList }
     ],
     ADUANA: [
+      { label: 'Registro de Personas', to: 'registro-persona', icon: ClipboardList },
       { label: 'Gestión de Cargas', to: 'cargas', icon: Home },
-      { label: 'Seguimiento', to: 'seguimiento', icon: ClipboardList }
+      { label: 'Seguimiento', to: 'seguimiento', icon: ClipboardList },
+      { label: 'Registro de Vehículo', to: 'registro-vehiculo', icon: Car }
     ]
   };
   const sections = sectionsByRole[user.role] || [];
@@ -64,20 +74,20 @@ export default function FuncionarioLayout() {
               to="/funcionario"
               end
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 rounded transition ${
+                `flex items-center gap-3 px-4 py-2 rounded ${
                   isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
                 }`
               }
             >
-              <Home className="w-5 h-5 text-white" />
-              Inicio
+              <Home className="w-5 h-5 text-white" /> Inicio
             </NavLink>
+
             {sections.map((sec, idx) => (
               <NavLink
                 key={idx}
                 to={`/funcionario/${sec.to}`}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-2 rounded transition ${
+                  `flex items-center gap-3 px-4 py-2 rounded ${
                     isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
                   }`
                 }
@@ -86,6 +96,7 @@ export default function FuncionarioLayout() {
                 {sec.label}
               </NavLink>
             ))}
+
             <h3 className="mt-6 px-4 text-xs font-semibold uppercase text-gray-300">
               Documentos
             </h3>
@@ -94,7 +105,7 @@ export default function FuncionarioLayout() {
                 key={idx}
                 to={`/funcionario/${doc.to}`}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-2 rounded transition ${
+                  `flex items-center gap-3 px-4 py-2 rounded ${
                     isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
                   }`
                 }
@@ -103,6 +114,30 @@ export default function FuncionarioLayout() {
                 {doc.name}
               </NavLink>
             ))}
+
+            <NavLink
+              to="/funcionario/escaneo-qr"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-2 rounded ${
+                  isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
+                }`
+              }
+            >
+              <QrCode className="w-5 h-5 text-white" />
+              Escaneo de Cédula (QR)
+            </NavLink>
+
+            <NavLink
+              to="/funcionario/informes"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-2 rounded ${
+                  isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
+                }`
+              }
+            >
+              <ClipboardList className="w-5 h-5 text-white" />
+              Informes
+            </NavLink>
           </nav>
         </div>
 
@@ -110,39 +145,34 @@ export default function FuncionarioLayout() {
           <NavLink
             to="/funcionario/ajustes"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded transition ${
+              `flex items-center gap-3 px-4 py-2 rounded ${
                 isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
               }`
             }
           >
-            <Settings className="w-5 h-5 text-white" />
-            Ajustes
+            <Settings className="w-5 h-5 text-white" /> Ajustes
           </NavLink>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-2 hover:bg-red-600 rounded transition text-red-100 w-full text-left"
+            className="flex items-center gap-3 px-4 py-2 hover:bg-red-600 rounded text-red-100 w-full text-left"
           >
-            <LogOut className="w-5 h-5 text-red-100" />
-            Cerrar Sesión
+            <LogOut className="w-5 h-5 text-red-100" /> Cerrar Sesión
           </button>
         </div>
       </aside>
 
       {/* Main */}
       <div className="flex-1 flex flex-col">
-        {/* Navbar */}
         <header className="w-full bg-white dark:bg-gray-800 shadow flex items-center justify-end px-6 py-3 sticky top-0 z-10">
           <Clock className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-2" />
           <span className="text-gray-700 dark:text-gray-200 font-medium">
             {now.toLocaleDateString()} {now.toLocaleTimeString()}
           </span>
         </header>
-
-        {/* Contenido */}
         <main className="p-6 overflow-auto">
           <Outlet />
         </main>
       </div>
     </div>
-  );
+);
 }

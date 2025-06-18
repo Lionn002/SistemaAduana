@@ -1,11 +1,11 @@
-// src/App.jsx
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import AdminCode from './pages/AdminCode';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './routes/ProtectedRoute';
 
-// Layout y páginas de usuario
+// Usuario
 import UserLayout from './pages/user/UserLayout';
 import UserDashboard from './pages/user/UserDashboard';
 import NewDocument from './pages/user/NewDocument';
@@ -15,16 +15,20 @@ import StatusCheck from './pages/user/StatusCheck';
 import Alerts from './pages/user/Alerts';
 import SettingsUser from './pages/user/Settings';
 
-// Layout y páginas de funcionario
+// Funcionario
 import FuncionarioLayout from './layouts/FuncionarioLayout';
 import FuncionarioDashboard from './components/FuncionarioDashboard';
 import Inspecciones from './pages/funcionario/Inspecciones';
-import InspeccionDetail from './pages/funcionario/InspeccionDetail'; // <-- verifícalo
+import InspeccionDetail from './pages/funcionario/InspeccionDetail';
 import ReportesPDI from './pages/funcionario/ReportesPDI';
 import Certificaciones from './pages/funcionario/Certificaciones';
 import ReportesSAG from './pages/funcionario/ReportesSAG';
 import Cargas from './pages/funcionario/Cargas';
 import Seguimiento from './pages/funcionario/Seguimiento';
+import RegistroPersona from './pages/funcionario/RegistroPersona';
+import RegistroVehiculo from './pages/funcionario/RegistroVehiculo';
+import EscaneoQR from './pages/funcionario/EscaneoQR';
+import Informes from './pages/funcionario/Informes';
 import SettingsFuncionario from './pages/user/Settings';
 
 function App() {
@@ -33,7 +37,7 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/admin-code" element={<AdminCode />} />
 
-      {/* Rutas de usuario */}
+      {/* Usuario */}
       <Route
         path="/usuario/*"
         element={
@@ -52,7 +56,7 @@ function App() {
         <Route path="ajustes" element={<SettingsUser />} />
       </Route>
 
-      {/* Ruta de admin */}
+      {/* Admin */}
       <Route
         path="/admin"
         element={
@@ -62,16 +66,17 @@ function App() {
         }
       />
 
-      {/* Rutas de funcionario con layout */}
+      {/* Funcionario */}
       <Route
         path="/funcionario/*"
         element={
-          <ProtectedRoute roles={['PDI', 'SAG', 'ADUANA']}>
+          <ProtectedRoute roles={['PDI','SAG','ADUANA']}>
             <FuncionarioLayout />
           </ProtectedRoute>
         }
       >
         <Route index element={<FuncionarioDashboard />} />
+        <Route path="registro-persona" element={<RegistroPersona />} />
         <Route path="inspecciones" element={<Inspecciones />} />
         <Route path="inspecciones/:id" element={<InspeccionDetail />} />
         <Route path="reportes-pdi" element={<ReportesPDI />} />
@@ -79,9 +84,12 @@ function App() {
         <Route path="reportes-sag" element={<ReportesSAG />} />
         <Route path="cargas" element={<Cargas />} />
         <Route path="seguimiento" element={<Seguimiento />} />
+        <Route path="registro-vehiculo" element={<RegistroVehiculo />} />
+        <Route path="escaneo-qr" element={<EscaneoQR />} />
+        <Route path="informes" element={<Informes />} />
         <Route path="docs/protocolo" element={<div>Protocolo...</div>} />
         <Route path="docs/manual" element={<div>Manual...</div>} />
-        <Route path="docs/reporte" element={<div>Reporte de Fronteras...</div>} />
+        <Route path="docs/reporte" element={<div>Reporte...</div>} />
         <Route path="ajustes" element={<SettingsFuncionario />} />
       </Route>
     </Routes>
