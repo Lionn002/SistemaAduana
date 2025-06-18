@@ -1,12 +1,29 @@
+// src/pages/funcionario/Inspecciones.jsx
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import Notification from '../../components/Notification';
 
 const estados = ['Todos', 'Pendiente', 'En Progreso', 'Completada'];
 
 export default function Inspecciones() {
+  const location = useLocation();
   const [inspecciones, setInspecciones] = useState([]);
   const [filter, setFilter] = useState('Todos');
-  const location = useLocation();
+  const [toast, setToast] = useState(location.state?.toast || null);
+
+  // Limpia el state.toast para evitar reaparecer al recargar
+  useEffect(() => {
+    if (location.state?.toast) {
+      window.history.replaceState({}, '', location.pathname);
+    }
+  }, [location]);
+
+  // Oculta toast después de 7s
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 7000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   // Carga inicial desde localStorage o defaults
   const loadAll = () => {
@@ -18,8 +35,12 @@ export default function Inspecciones() {
         fecha: '2025-06-15T09:30',
         lugar: 'Paso Los Libertadores',
         estado: 'Pendiente',
-        descripcion: 'Revisión completa de equipaje y documentación.',
-        persona: { nombre: 'María José González Martínez', rut: '11111111-1' },
+        descripcion:
+          'Revisión completa de equipaje y documentación.',
+        persona: {
+          nombre: 'María José González Martínez',
+          rut: '11111111-1'
+        },
         ultimaActualizacion: null,
         borrador: true
       },
@@ -28,8 +49,12 @@ export default function Inspecciones() {
         fecha: '2025-06-16T14:20',
         lugar: 'Puerto de San Antonio',
         estado: 'Completada',
-        descripcion: 'Inspección de carga refrigerada: verificada temperatura.',
-        persona: { nombre: 'Fernanda Alejandra Ramírez Soto', rut: '33333333-3' },
+        descripcion:
+          'Inspección de carga refrigerada: verificada temperatura.',
+        persona: {
+          nombre: 'Fernanda Alejandra Ramírez Soto',
+          rut: '33333333-3'
+        },
         ultimaActualizacion: '2025-06-16T15:00',
         borrador: false
       }
@@ -47,11 +72,11 @@ export default function Inspecciones() {
       ? inspecciones
       : inspecciones.filter(ins => ins.estado === filter);
 
-  // Formatea la fecha restando 4h
-  const formatDateTime = (iso) => {
-    const date = new Date(iso.replace('T', ' '));
-    date.setHours(date.getHours() - 4);
-    return date.toLocaleString('es-CL', {
+  // Ajusta fecha restando 4h y formatea 24h
+  const formatDateTime = iso => {
+    const d = new Date(iso.replace('T', ' '));
+    d.setHours(d.getHours() - 4);
+    return d.toLocaleString('es-CL', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -62,11 +87,22 @@ export default function Inspecciones() {
   };
 
   return (
-    <div className="text-gray-800 dark:text-gray-200">
-      <h2 className="text-2xl font-semibold mb-4">Inspecciones PDI</h2>
+    <div className="relative">
+      {/* Toast */}
+      {toast && (
+        <Notification
+          show={true}
+          message={toast}
+          onClose={() => setToast(null)}
+        />
+      )}
 
-      {/* Filtro de estado */}
-      <div className="mb-4 flex items-center gap-2">
+      <h2 className="text-2xl font-semibold mb-4 dark:text-gray-100">
+        Inspecciones PDI
+      </h2>
+
+      {/* Filtro */}
+      <div className="mb-4 flex items-center gap-2 dark:text-gray-200">
         <label className="font-medium">Filtrar por estado:</label>
         <select
           value={filter}
@@ -81,6 +117,7 @@ export default function Inspecciones() {
         </select>
       </div>
 
+      {/* Lista */}
       <ul className="space-y-2">
         {filtered.map(ins => (
           <NavLink
@@ -91,7 +128,11 @@ export default function Inspecciones() {
             <li className="bg-white dark:bg-gray-800 rounded shadow p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
               <div className="flex justify-between items-start">
                 <div>
-                  <span className="font-medium">#{ins.id}</span> – {ins.lugar}
+                  <span className="font-medium dark:text-gray-100">
+                    #{ins.id}
+                  </span>{' '}
+                  –{' '}
+                  <span className="dark:text-gray-200">{ins.lugar}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm">
                   {ins.borrador && ins.ultimaActualizacion && (
@@ -117,14 +158,18 @@ export default function Inspecciones() {
               </p>
               <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                 {ins.ultimaActualizacion
-                  ? `Última actualización: ${formatDateTime(ins.ultimaActualizacion)}`
+                  ? `Última actualización: ${formatDateTime(
+                      ins.ultimaActualizacion
+                    )}`
                   : `Fecha: ${formatDateTime(ins.fecha)}`}
               </div>
             </li>
           </NavLink>
         ))}
         {filtered.length === 0 && (
-          <li className="text-center text-gray-500 dark:text-gray-400">No hay inspecciones.</li>
+          <li className="text-center text-gray-500 dark:text-gray-400">
+            No hay inspecciones.
+          </li>
         )}
       </ul>
     </div>
