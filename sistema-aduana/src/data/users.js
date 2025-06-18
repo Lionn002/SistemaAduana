@@ -28,5 +28,11 @@ export const users = [
     password: 'aduana123',
     role: 'ADUANA',
     name: 'Oficial Andrés Fuentes Rojas'
+  },
+  {
+    rut: '66.666.666-6',
+    password: 'admin123',
+    role: 'admin',
+    name: 'Administrador General'
   }
 ];

@@ -43,7 +43,7 @@ export default function FuncionarioLayout() {
     ],
     ADUANA: [
       { label: 'Registro de Personas', to: 'registro-persona', icon: ClipboardList },
-      { label: 'Gestión de Cargas', to: 'cargas', icon: Home },
+      { label: 'Gestión de Cargas', to: 'cargas', icon: Car },
       { label: 'Seguimiento', to: 'seguimiento', icon: ClipboardList },
       { label: 'Registro de Vehículo', to: 'registro-vehiculo', icon: Car }
     ]
@@ -174,5 +174,5 @@ export default function FuncionarioLayout() {
         </main>
       </div>
     </div>
-);
+  );
 }

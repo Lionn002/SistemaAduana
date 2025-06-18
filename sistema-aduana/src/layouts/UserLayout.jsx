@@ -1,7 +1,7 @@
 // src/pages/user/UserLayout.jsx
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { FiLogOut, FiSettings } from 'react-icons/fi';
-import logo from '../../assets/logo_aduanas_chile.png';
+import logo from '../assets/logo_aduanas_chile.png';
 
 const navItems = [
   { to: '', label: 'Inicio' },

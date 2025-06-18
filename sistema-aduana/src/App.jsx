@@ -1,12 +1,22 @@
+// src/App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+
+// Public
 import Login from './pages/Login';
 import AdminCode from './pages/AdminCode';
-import AdminDashboard from './pages/AdminDashboard';
-import ProtectedRoute from './routes/ProtectedRoute';
 
-// Usuario
-import UserLayout from './pages/user/UserLayout';
+// Layouts
+import AdminLayout from './layouts/AdminLayout';
+import FuncionarioLayout from './layouts/FuncionarioLayout';
+import UserLayout from './layouts/UserLayout';
+
+// Admin pages
+import AdminDashboard from './pages/AdminDashboard';
+import RegistroUsuario from './pages/funcionario/RegistroUsuario';
+import SettingsAdmin from './pages/admin/SettingsAdmin';
+
+// Usuario pages
 import UserDashboard from './pages/user/UserDashboard';
 import NewDocument from './pages/user/NewDocument';
 import DeclarationForm from './pages/user/DeclarationForm';
@@ -15,8 +25,7 @@ import StatusCheck from './pages/user/StatusCheck';
 import Alerts from './pages/user/Alerts';
 import SettingsUser from './pages/user/Settings';
 
-// Funcionario
-import FuncionarioLayout from './layouts/FuncionarioLayout';
+// Funcionario pages
 import FuncionarioDashboard from './components/FuncionarioDashboard';
 import Inspecciones from './pages/funcionario/Inspecciones';
 import InspeccionDetail from './pages/funcionario/InspeccionDetail';
@@ -29,11 +38,14 @@ import RegistroPersona from './pages/funcionario/RegistroPersona';
 import RegistroVehiculo from './pages/funcionario/RegistroVehiculo';
 import EscaneoQR from './pages/funcionario/EscaneoQR';
 import Informes from './pages/funcionario/Informes';
-import SettingsFuncionario from './pages/user/Settings';
+import SettingsFuncionario from './pages/funcionario/Settings';
+
+import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
   return (
     <Routes>
+      {/* Login */}
       <Route path="/" element={<Login />} />
       <Route path="/admin-code" element={<AdminCode />} />
 
@@ -52,19 +64,22 @@ function App() {
         <Route path="alertas" element={<Alerts />} />
         <Route path="formulario-jurada" element={<DeclarationForm />} />
         <Route path="validacion-vehiculo" element={<VehicleValidation />} />
-        <Route path="mas-tramites" element={<div>Más trámites</div>} />
         <Route path="ajustes" element={<SettingsUser />} />
       </Route>
 
       {/* Admin */}
       <Route
-        path="/admin"
+        path="/admin/*"
         element={
           <ProtectedRoute role="admin">
-            <AdminDashboard />
+            <AdminLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="registro-usuario" element={<RegistroUsuario />} />
+        <Route path="ajustes" element={<SettingsAdmin />} />
+      </Route>
 
       {/* Funcionario */}
       <Route
@@ -77,6 +92,7 @@ function App() {
       >
         <Route index element={<FuncionarioDashboard />} />
         <Route path="registro-persona" element={<RegistroPersona />} />
+        <Route path="registro-vehiculo" element={<RegistroVehiculo />} />
         <Route path="inspecciones" element={<Inspecciones />} />
         <Route path="inspecciones/:id" element={<InspeccionDetail />} />
         <Route path="reportes-pdi" element={<ReportesPDI />} />
@@ -84,12 +100,8 @@ function App() {
         <Route path="reportes-sag" element={<ReportesSAG />} />
         <Route path="cargas" element={<Cargas />} />
         <Route path="seguimiento" element={<Seguimiento />} />
-        <Route path="registro-vehiculo" element={<RegistroVehiculo />} />
         <Route path="escaneo-qr" element={<EscaneoQR />} />
         <Route path="informes" element={<Informes />} />
-        <Route path="docs/protocolo" element={<div>Protocolo...</div>} />
-        <Route path="docs/manual" element={<div>Manual...</div>} />
-        <Route path="docs/reporte" element={<div>Reporte...</div>} />
         <Route path="ajustes" element={<SettingsFuncionario />} />
       </Route>
     </Routes>
