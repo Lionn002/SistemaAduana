@@ -1,7 +1,7 @@
 export const users = [
   {
     rut: '11.111.111-1',
-    password: 'usuario123',
+    password: 'u123',
     role: 'usuario',
     name: 'María José González Martínez'
   },

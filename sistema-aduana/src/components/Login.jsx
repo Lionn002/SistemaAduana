@@ -1,6 +1,6 @@
 // src/components/Login.jsx
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { validate, format } from 'rut.js';
 import { users } from '../data/users';
 import logo from '../assets/logo_aduanas_chile.png';
@@ -15,19 +15,16 @@ export default function Login() {
   const canvasRef = useRef(null);
   const navigate = useNavigate();
 
-  // Genera un texto aleatorio de 6 caracteres para el captcha
+  // Genera texto aleatorio para captcha
   const generateCaptcha = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let text = '';
-    for (let i = 0; i < 6; i++) {
-      text += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+    for (let i = 0; i < 6; i++) text += chars.charAt(Math.floor(Math.random() * chars.length));
     setCaptchaText(text);
     setCaptchaInput('');
     setCaptchaError('');
   };
 
-  // Dibuja el captcha en el canvas
   const drawCaptcha = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -37,7 +34,7 @@ export default function Login() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.font = '24px Arial';
     for (let i = 0; i < captchaText.length; i++) {
-      const char = captchaText.charAt(i);
+      const char = captchaText[i];
       const x = 10 + i * 20;
       const y = 25 + Math.random() * 8;
       const angle = (Math.random() - 0.5) * 0.3;
@@ -48,7 +45,6 @@ export default function Login() {
       ctx.fillText(char, 0, 0);
       ctx.restore();
     }
-    // Líneas de ruido
     for (let i = 0; i < 5; i++) {
       ctx.beginPath();
       ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
@@ -61,73 +57,55 @@ export default function Login() {
   useEffect(generateCaptcha, []);
   useEffect(drawCaptcha, [captchaText]);
 
-  // Permite solo dígitos y K/k (solo al final tras mínimo 7 dígitos)
-  const handleRutKeyDown = (e) => {
-    const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+  // Permitir solo dígitos y K/k al final
+  const handleRutKeyDown = e => {
+    const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab'];
     if (allowed.includes(e.key)) return;
     const { value, selectionStart } = e.target;
     if (/[0-9]/.test(e.key)) return;
-    if (/^[kK]$/.test(e.key)) {
-      const digits = (value.match(/\d/g) || []).length;
-      if (digits >= 7 && selectionStart === value.length) return;
-    }
+    if (/^[kK]$/.test(e.key) && (value.match(/\d/g) || []).length >= 7 && selectionStart === value.length) return;
     e.preventDefault();
   };
 
-  // Actualiza valor de RUT y limpia error
-  const handleRutChange = (e) => {
+  const handleRutChange = e => {
     setRut(e.target.value);
     setErrors(prev => ({ ...prev, rut: '' }));
   };
 
-  // Al salir del campo, formatea y valida
   const handleRutBlur = () => {
     if (rut) {
       const formatted = format(rut);
       setRut(formatted);
-      setErrors(prev => ({
-        ...prev,
-        rut: validate(formatted) ? '' : 'Formato de RUT inválido'
-      }));
+      setErrors(prev => ({ ...prev, rut: validate(formatted) ? '' : 'Formato de RUT inválido' }));
     }
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = e => {
     setPassword(e.target.value);
     setErrors(prev => ({ ...prev, password: '' }));
   };
 
-  const handleCaptchaInput = (e) => {
+  const handleCaptchaInput = e => {
     const val = e.target.value;
     setCaptchaInput(val);
-    if (val.trim().toLowerCase() === captchaText.toLowerCase()) {
-      setCaptchaError('');
-    } else {
-      setCaptchaError('Captcha incorrecto');
-    }
+    setCaptchaError(val.trim().toLowerCase() === captchaText.toLowerCase() ? '' : 'Captcha incorrecto');
   };
 
-  // Lógica de login y redirección
   const handleLogin = () => {
     setErrors(prev => ({ ...prev, auth: '' }));
     const user = users.find(u => u.rut === rut && u.password === password);
-    if (!user) {
-      setErrors(prev => ({ ...prev, auth: 'Credenciales incorrectas' }));
-      return;
-    }
+    if (!user) return setErrors(prev => ({ ...prev, auth: 'Credenciales incorrectas' }));
     if (captchaError) return;
     localStorage.setItem('user', JSON.stringify(user));
-    // Admin y funcionarios van a verificación SMS
-    if (['admin', 'PDI', 'SAG', 'ADUANA'].includes(user.role)) {
+    if (['admin','PDI','SAG','ADUANA'].includes(user.role)) {
       navigate('/admin-code', { state: { user } });
     } else {
       navigate('/usuario', { state: { user } });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
-    // Validaciones previas
     if (!rut) return setErrors(prev => ({ ...prev, rut: 'RUT obligatorio' }));
     if (!validate(rut)) return setErrors(prev => ({ ...prev, rut: 'RUT inválido' }));
     if (!password) return setErrors(prev => ({ ...prev, password: 'Contraseña obligatoria' }));
@@ -157,7 +135,6 @@ export default function Login() {
             />
             {errors.rut && <p className="text-red-500 text-sm mt-1">{errors.rut}</p>}
           </div>
-
           <div>
             <input
               type="password"
@@ -168,7 +145,6 @@ export default function Login() {
             />
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
-
           <div className="flex items-center space-x-4">
             <canvas ref={canvasRef} width={140} height={50} className="border border-gray-300 rounded" />
             <button type="button" onClick={generateCaptcha} className="text-sm text-secondary underline">
@@ -186,15 +162,21 @@ export default function Login() {
             />
             {captchaError && <p className="text-red-500 text-sm mt-1">{captchaError}</p>}
           </div>
-
           <button
             type="submit"
             className="w-full bg-secondary dark:bg-secondary/80 text-white py-2 rounded-lg hover:bg-secondary/90 transition"
           >
             Ingresar
           </button>
-
           {errors.auth && <p className="text-red-500 text-sm text-center mt-2">{errors.auth}</p>}
+        </div>
+        <div className="text-center mt-4">
+          <Link
+            to="/olvide-contrasena"
+            className="text-sm text-secondary hover:underline focus:outline-none focus:ring-2 focus:ring-secondary"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
         </div>
       </form>
     </div>

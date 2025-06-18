@@ -9,13 +9,14 @@ import {
   LogOut,
   Clock,
   Car,
-  QrCode
+  QrCode,
+  UserPlus
 } from 'lucide-react';
 import logo from '../assets/logo_aduanas_chile.png';
 
 export default function FuncionarioLayout() {
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const { state, pathname } = useLocation();
   const user = state?.user || JSON.parse(localStorage.getItem('user') || 'null');
   const [now, setNow] = useState(new Date());
 
@@ -33,27 +34,28 @@ export default function FuncionarioLayout() {
   const sectionsByRole = {
     PDI: [
       { label: 'Registro de Personas', to: 'registro-persona', icon: ClipboardList },
-      { label: 'Inspecciones', to: 'inspecciones', icon: Home },
-      { label: 'Reportes PDI', to: 'reportes-pdi', icon: ClipboardList }
+      { label: 'Registro de Menores',  to: 'registro-menores',  icon: UserPlus },
+      { label: 'Inspecciones',         to: 'inspecciones',      icon: Home },
+      { label: 'Reportes PDI',         to: 'reportes-pdi',      icon: ClipboardList }
     ],
     SAG: [
       { label: 'Registro de Personas', to: 'registro-persona', icon: ClipboardList },
-      { label: 'Certificaciones', to: 'certificaciones', icon: Home },
-      { label: 'Reportes SAG', to: 'reportes-sag', icon: ClipboardList }
+      { label: 'Certificaciones',      to: 'certificaciones',  icon: Home },
+      { label: 'Reportes SAG',         to: 'reportes-sag',     icon: ClipboardList }
     ],
     ADUANA: [
       { label: 'Registro de Personas', to: 'registro-persona', icon: ClipboardList },
-      { label: 'Gestión de Cargas', to: 'cargas', icon: Car },
-      { label: 'Seguimiento', to: 'seguimiento', icon: ClipboardList },
-      { label: 'Registro de Vehículo', to: 'registro-vehiculo', icon: Car }
+      { label: 'Gestión de Cargas',    to: 'cargas',           icon: Car },
+      { label: 'Seguimiento',          to: 'seguimiento',      icon: ClipboardList },
+      { label: 'Registro de Vehículo', to: 'registro-vehiculo',icon: Car }
     ]
   };
   const sections = sectionsByRole[user.role] || [];
 
   const commonDocs = [
     { name: 'Protocolo de Operaciones', to: 'docs/protocolo' },
-    { name: 'Manual de Coordinación', to: 'docs/manual' },
-    { name: 'Reporte de Fronteras', to: 'docs/reporte' }
+    { name: 'Manual de Coordinación',   to: 'docs/manual'    },
+    { name: 'Reporte de Fronteras',     to: 'docs/reporte'   }
   ];
 
   const handleLogout = () => {
@@ -63,7 +65,6 @@ export default function FuncionarioLayout() {
 
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar */}
       <aside className="w-64 bg-[#0b1f3a] dark:bg-gray-800 text-white flex flex-col justify-between shadow-lg">
         <div>
           <div className="p-6 flex justify-center">
@@ -140,7 +141,6 @@ export default function FuncionarioLayout() {
             </NavLink>
           </nav>
         </div>
-
         <div className="px-4 pb-6 space-y-2">
           <NavLink
             to="/funcionario/ajustes"
@@ -161,7 +161,6 @@ export default function FuncionarioLayout() {
         </div>
       </aside>
 
-      {/* Main */}
       <div className="flex-1 flex flex-col">
         <header className="w-full bg-white dark:bg-gray-800 shadow flex items-center justify-end px-6 py-3 sticky top-0 z-10">
           <Clock className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-2" />
@@ -174,5 +173,5 @@ export default function FuncionarioLayout() {
         </main>
       </div>
     </div>
-  );
+);
 }

@@ -1,4 +1,4 @@
-// src/pages/user/UserLayout.jsx
+import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { FiLogOut, FiSettings } from 'react-icons/fi';
 import logo from '../assets/logo_aduanas_chile.png';
@@ -11,11 +11,11 @@ const navItems = [
   { to: 'formulario-jurada', label: 'Formulario de declaración jurada' },
   { to: 'validacion-vehiculo', label: 'Registro y Validación de Vehículo' },
   { to: 'mas-tramites', label: 'Más trámites' },
-  // ya no incluimos "ajustes" aquí
 ];
 
-const UserLayout = () => {
+export default function UserLayout() {
   const navigate = useNavigate();
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     navigate('/');
@@ -23,14 +23,11 @@ const UserLayout = () => {
 
   return (
     <div className="flex h-screen">
-      {/* SIDEBAR */}
-      <aside className="w-64 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 flex flex-col border-r border-gray-200 dark:border-gray-700 hide-scrollbar">
-        {/* Logo */}
+      {/* Sidebar */}
+      <aside className="w-64 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 flex flex-col border-r border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-center h-24 p-4">
           <img src={logo} alt="Logo Aduanas" className="w-56 h-auto" />
         </div>
-
-        {/* Nav links */}
         <nav className="flex-1 overflow-y-auto">
           {navItems.map(({ to, label }) => (
             <NavLink
@@ -49,8 +46,6 @@ const UserLayout = () => {
             </NavLink>
           ))}
         </nav>
-
-        {/* Ajustes ( botón con icono ) */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
           <NavLink
             to="/usuario/ajustes"
@@ -66,8 +61,6 @@ const UserLayout = () => {
             Ajustes
           </NavLink>
         </div>
-
-        {/* Cerrar sesión */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
           <button
             onClick={handleLogout}
@@ -79,24 +72,20 @@ const UserLayout = () => {
         </div>
       </aside>
 
-      {/* CONTENIDO PRINCIPAL */}
+      {/* Main content */}
       <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
         <header className="bg-white dark:bg-gray-800 shadow p-4">
           <h1 className="text-xl font-semibold text-primary dark:text-secondary">
             Panel de Usuario
           </h1>
         </header>
-
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
-
         <footer className="bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-center py-3 border-t border-gray-200 dark:border-gray-700 text-sm">
           © 2025 Servicio Nacional de Aduanas. Todos los derechos reservados.
         </footer>
       </div>
     </div>
-  );
-};
-
-export default UserLayout;
+);
+}

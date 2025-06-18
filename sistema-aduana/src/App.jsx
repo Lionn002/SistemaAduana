@@ -1,9 +1,10 @@
-// src/App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // Public
-import Login from './pages/Login';
+import Login from './components/Login';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import AdminCode from './pages/AdminCode';
 
 // Layouts
@@ -39,14 +40,18 @@ import RegistroVehiculo from './pages/funcionario/RegistroVehiculo';
 import EscaneoQR from './pages/funcionario/EscaneoQR';
 import Informes from './pages/funcionario/Informes';
 import SettingsFuncionario from './pages/funcionario/Settings';
+import RegistroMenores from './pages/funcionario/RegistroMenores';
 
+// Route guard
 import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
   return (
     <Routes>
-      {/* Login */}
+      {/* Public */}
       <Route path="/" element={<Login />} />
+      <Route path="/olvide-contrasena" element={<ForgotPassword />} />
+      <Route path="/restablecer-contrasena" element={<ResetPassword />} />
       <Route path="/admin-code" element={<AdminCode />} />
 
       {/* Usuario */}
@@ -92,6 +97,7 @@ function App() {
       >
         <Route index element={<FuncionarioDashboard />} />
         <Route path="registro-persona" element={<RegistroPersona />} />
+        <Route path="registro-menores" element={<RegistroMenores />} />
         <Route path="registro-vehiculo" element={<RegistroVehiculo />} />
         <Route path="inspecciones" element={<Inspecciones />} />
         <Route path="inspecciones/:id" element={<InspeccionDetail />} />
