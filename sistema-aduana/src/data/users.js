@@ -7,7 +7,7 @@ export const users = [
   },
   {
     rut: '22.222.222-2',
-    password: 'usuario456',
+    password: 'u321',
     role: 'usuario',
     name: 'Fernanda Alejandra Ramírez Soto'
   },
@@ -25,7 +25,7 @@ export const users = [
   },
   {
     rut: '55.555.555-5',
-    password: 'aduana123',
+    password: 'a123',
     role: 'ADUANA',
     name: 'Oficial Andrés Fuentes Rojas'
   },

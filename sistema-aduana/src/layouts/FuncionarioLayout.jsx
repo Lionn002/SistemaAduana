@@ -35,13 +35,15 @@ export default function FuncionarioLayout() {
     PDI: [
       { label: 'Registro de Personas', to: 'registro-persona', icon: ClipboardList },
       { label: 'Registro de Menores',  to: 'registro-menores',  icon: UserPlus },
-      { label: 'Inspecciones',         to: 'inspecciones',      icon: Home },
-      { label: 'Reportes PDI',         to: 'reportes-pdi',      icon: ClipboardList }
+      { label: 'Declarar Vehículo',    to: 'declaracion-vehiculo', icon: Car },
+      { label: 'Revisión de Declaraciones', to: 'revision-alimentos', icon: ClipboardList },
+      { label: 'Historial de Trámites', to: 'historial-declaraciones', icon: FileText }
     ],
     SAG: [
       { label: 'Registro de Personas', to: 'registro-persona', icon: ClipboardList },
-      { label: 'Certificaciones',      to: 'certificaciones',  icon: Home },
-      { label: 'Reportes SAG',         to: 'reportes-sag',     icon: ClipboardList }
+      { label: 'Declarar Alimentos',   to: 'declaracion-alimentos', icon: ClipboardList },
+      { label: 'Revisión de Declaraciones', to: 'revision-alimentos', icon: ClipboardList },
+      { label: 'Historial de Trámites', to: 'historial-declaraciones', icon: FileText }
     ],
     ADUANA: [
       { label: 'Registro de Personas', to: 'registro-persona', icon: ClipboardList },
@@ -141,6 +143,7 @@ export default function FuncionarioLayout() {
             </NavLink>
           </nav>
         </div>
+
         <div className="px-4 pb-6 space-y-2">
           <NavLink
             to="/funcionario/ajustes"
@@ -173,5 +176,5 @@ export default function FuncionarioLayout() {
         </main>
       </div>
     </div>
-);
+  );
 }

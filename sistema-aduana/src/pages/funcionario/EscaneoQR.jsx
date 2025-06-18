@@ -20,7 +20,7 @@ export default function EscaneoQR() {
       </h2>
       <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-10 mb-4 bg-gray-50 dark:bg-gray-700">
         <QrCode className="w-16 h-16 text-gray-400 dark:text-gray-300 mb-2" />
-        <p className="text-gray-500 dark:text-gray-400 mb-4">Aquí se simula el lector de QR</p>
+        <p className="text-gray-500 dark:text-gray-400 mb-4">Activar lector de QR</p>
         <button
           onClick={simulateScan}
           className="bg-secondary dark:bg-secondary/80 text-white px-4 py-2 rounded hover:bg-secondary/90 transition"

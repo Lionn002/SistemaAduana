@@ -1,3 +1,4 @@
+// src/layouts/UserLayout.jsx
 import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { FiLogOut, FiSettings } from 'react-icons/fi';
@@ -6,11 +7,12 @@ import logo from '../assets/logo_aduanas_chile.png';
 const navItems = [
   { to: '', label: 'Inicio' },
   { to: 'consulta-estado', label: 'Consultar estado de trámites' },
-  { to: 'nueva-declaracion', label: 'Nueva declaración/documentación' },
+  { to: 'declarar-alimentos', label: 'Declarar Alimentos' },
+  { to: 'declarar-vehiculo', label: 'Declarar Vehículo' },
+  { to: 'declarar-menor', label: 'Declarar Menor' },
+  { to: 'historial', label: 'Historial de Declaraciones' },
   { to: 'alertas', label: 'Alertas' },
-  { to: 'formulario-jurada', label: 'Formulario de declaración jurada' },
-  { to: 'validacion-vehiculo', label: 'Registro y Validación de Vehículo' },
-  { to: 'mas-tramites', label: 'Más trámites' },
+  { to: 'mas-tramites', label: 'Más trámites' }
 ];
 
 export default function UserLayout() {
@@ -87,5 +89,5 @@ export default function UserLayout() {
         </footer>
       </div>
     </div>
-);
+  );
 }

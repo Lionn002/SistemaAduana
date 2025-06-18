@@ -16,12 +16,11 @@ import UserLayout from './layouts/UserLayout';
 import AdminDashboard from './pages/AdminDashboard';
 import RegistroUsuario from './pages/funcionario/RegistroUsuario';
 import SettingsAdmin from './pages/admin/SettingsAdmin';
+import RegistroErrores from './pages/admin/RegistroErrores';
 
 // Usuario pages
 import UserDashboard from './pages/user/UserDashboard';
 import NewDocument from './pages/user/NewDocument';
-import DeclarationForm from './pages/user/DeclarationForm';
-import VehicleValidation from './pages/user/VehicleValidation';
 import StatusCheck from './pages/user/StatusCheck';
 import Alerts from './pages/user/Alerts';
 import SettingsUser from './pages/user/Settings';
@@ -41,6 +40,13 @@ import EscaneoQR from './pages/funcionario/EscaneoQR';
 import Informes from './pages/funcionario/Informes';
 import SettingsFuncionario from './pages/funcionario/Settings';
 import RegistroMenores from './pages/funcionario/RegistroMenores';
+
+// Declaraciones RF09
+import DeclaracionAlimentos from './pages/declaraciones/DeclaracionAlimentos';
+import DeclaracionVehiculoPDI from './pages/declaraciones/DeclaracionVehiculoPDI';
+import DeclaracionMenorPDI from './pages/declaraciones/DeclaracionMenorPDI';
+import RevisionAlimentos from './pages/declaraciones/RevisionAlimentos';
+import HistorialDeclaraciones from './pages/declaraciones/HistorialDeclaraciones';
 
 // Route guard
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -67,9 +73,13 @@ function App() {
         <Route path="consulta-estado" element={<StatusCheck />} />
         <Route path="nueva-declaracion" element={<NewDocument />} />
         <Route path="alertas" element={<Alerts />} />
-        <Route path="formulario-jurada" element={<DeclarationForm />} />
-        <Route path="validacion-vehiculo" element={<VehicleValidation />} />
         <Route path="ajustes" element={<SettingsUser />} />
+
+        {/* Declaraciones RF09 (Usuario) */}
+        <Route path="declarar-alimentos" element={<DeclaracionAlimentos />} />
+        <Route path="declarar-vehiculo" element={<DeclaracionVehiculoPDI />} />
+        <Route path="declarar-menor" element={<DeclaracionMenorPDI />} />
+        <Route path="historial" element={<HistorialDeclaraciones />} />
       </Route>
 
       {/* Admin */}
@@ -83,6 +93,7 @@ function App() {
       >
         <Route index element={<AdminDashboard />} />
         <Route path="registro-usuario" element={<RegistroUsuario />} />
+        <Route path="logs" element={<RegistroErrores />} />
         <Route path="ajustes" element={<SettingsAdmin />} />
       </Route>
 
@@ -109,6 +120,12 @@ function App() {
         <Route path="escaneo-qr" element={<EscaneoQR />} />
         <Route path="informes" element={<Informes />} />
         <Route path="ajustes" element={<SettingsFuncionario />} />
+
+        {/* Declaraciones RF09 (Funcionario) */}
+        <Route path="declaracion-alimentos" element={<DeclaracionAlimentos />} />
+        <Route path="declaracion-vehiculo" element={<DeclaracionVehiculoPDI />} />
+        <Route path="revision-alimentos" element={<RevisionAlimentos />} />
+        <Route path="historial-declaraciones" element={<HistorialDeclaraciones />} />
       </Route>
     </Routes>
   );

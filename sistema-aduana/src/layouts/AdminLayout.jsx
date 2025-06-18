@@ -1,7 +1,7 @@
 // src/layouts/AdminLayout.jsx
 import React, { useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Home, UserPlus, Settings, LogOut } from 'lucide-react';
+import { Home, UserPlus, Settings, LogOut, AlertCircle } from 'lucide-react';
 import logo from '../assets/logo_aduanas_chile.png';
 
 export default function AdminLayout() {
@@ -51,6 +51,18 @@ export default function AdminLayout() {
             >
               <UserPlus className="w-5 h-5 text-white" />
               Registro de Usuarios
+            </NavLink>
+
+            <NavLink
+              to="/admin/logs"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-2 rounded ${
+                  isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
+                }`
+              }
+            >
+              <AlertCircle className="w-5 h-5 text-white" />
+              Registro de Errores
             </NavLink>
           </nav>
         </div>
