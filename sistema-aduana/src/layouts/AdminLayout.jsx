@@ -1,4 +1,3 @@
-// src/layouts/AdminLayout.jsx
 import React, { useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Home, UserPlus, Settings, LogOut, AlertCircle } from 'lucide-react';
@@ -20,9 +19,9 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#0b1f3a] dark:bg-gray-800 text-white flex flex-col justify-between">
+      <aside className="w-64 bg-[#0b1f3a] dark:bg-gray-800 text-white flex flex-col justify-between flex-shrink-0">
         <div>
           <div className="p-6 flex justify-center">
             <img src={logo} alt="Logo Aduanas" className="w-20 h-20" />
@@ -32,9 +31,7 @@ export default function AdminLayout() {
               to="/admin"
               end
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 rounded ${
-                  isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
-                }`
+                `flex items-center gap-3 px-4 py-2 rounded ${isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'}`
               }
             >
               <Home className="w-5 h-5 text-white" />
@@ -44,9 +41,7 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/registro-usuario"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 rounded ${
-                  isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
-                }`
+                `flex items-center gap-3 px-4 py-2 rounded ${isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'}`
               }
             >
               <UserPlus className="w-5 h-5 text-white" />
@@ -56,9 +51,7 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/logs"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 rounded ${
-                  isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
-                }`
+                `flex items-center gap-3 px-4 py-2 rounded ${isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'}`
               }
             >
               <AlertCircle className="w-5 h-5 text-white" />
@@ -71,9 +64,7 @@ export default function AdminLayout() {
           <NavLink
             to="/admin/ajustes"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded ${
-                isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'
-              }`
+              `flex items-center gap-3 px-4 py-2 rounded ${isActive ? 'bg-[#0a192f]' : 'hover:bg-[#0a192f]'}`
             }
           >
             <Settings className="w-5 h-5 text-white" />
@@ -89,14 +80,14 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col">
+      {/* Contenido principal */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
         <header className="w-full bg-white dark:bg-gray-800 shadow px-6 py-3">
           <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
             Panel de Administrador
           </h1>
         </header>
-        <main className="p-6 overflow-auto">
+        <main className="flex-1 overflow-y-auto px-6 py-4">
           <Outlet />
         </main>
       </div>

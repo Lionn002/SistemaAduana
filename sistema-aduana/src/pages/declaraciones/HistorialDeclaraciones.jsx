@@ -1,22 +1,42 @@
 // src/pages/declaraciones/HistorialDeclaraciones.jsx
 import React, { useEffect, useState } from 'react';
 import historialData from '../../data/historial';
+import { format as formatRut } from 'rut.js';
 
 export default function HistorialDeclaraciones() {
   const [resultados, setResultados] = useState([]);
-  const [userRut, setUserRut] = useState('');
+  const [busquedaRut, setBusquedaRut] = useState('');
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-    if (user?.rut) {
-      setUserRut(user.rut);
-      const coincidencias = historialData.filter(f => f.rut === user.rut);
+    const usuario = JSON.parse(localStorage.getItem('user') || 'null');
+    setUser(usuario);
+
+    if (usuario?.role === 'usuario') {
+      const coincidencias = historialData.filter(f => f.rut === usuario.rut);
       setResultados(coincidencias);
     }
   }, []);
 
+  const handleBuscar = () => {
+    if (!busquedaRut.trim()) return;
+    const coincidencias = historialData.filter(f => f.rut === busquedaRut.trim());
+    setResultados(coincidencias);
+  };
+
+  const handleInputChange = (e) => {
+    const raw = e.target.value;
+    const formatted = formatRut(raw);
+    setBusquedaRut(formatted);
+  };
+
+  const handleInputBlur = () => {
+    if (busquedaRut) {
+      setBusquedaRut(formatRut(busquedaRut));
+    }
+  };
+
   const handleDescargar = (declaracion) => {
-    // Simulación de descarga
     alert(`Descargando PDF para: ${declaracion.tipo} de ${declaracion.nombre}`);
   };
 
@@ -26,8 +46,32 @@ export default function HistorialDeclaraciones() {
         Historial de Declaraciones
       </h2>
 
+      {user && (user.role === 'PDI' || user.role === 'SAG') && (
+        <div className="mb-6">
+          <label className="block text-gray-700 dark:text-gray-200 mb-2 font-semibold">
+            Buscar por RUT:
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="11.111.111-1"
+              value={busquedaRut}
+              onChange={handleInputChange}
+              onBlur={handleInputBlur}
+              className="flex-1 px-4 py-2 rounded border dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+            />
+            <button
+              onClick={handleBuscar}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Buscar
+            </button>
+          </div>
+        </div>
+      )}
+
       {resultados.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-300">No tienes declaraciones registradas.</p>
+        <p className="text-gray-600 dark:text-gray-300">No se encontraron declaraciones.</p>
       ) : (
         <ul className="space-y-4">
           {resultados.map((item, index) => (

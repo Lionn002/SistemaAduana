@@ -1,28 +1,27 @@
+// src/routes/ProtectedRoute.jsx
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
 export default function ProtectedRoute({ children, role, roles }) {
   const location = useLocation();
-  // Intentamos leer el user de location.state o de localStorage
-  const stateUser = location.state?.user;
-  const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
-  const user = stateUser || storedUser;
 
-  // Si no hay usuario, redirigimos al login
+  // Siempre obtenemos el usuario desde localStorage
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+  // No hay sesión activa
   if (!user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" replace state={{ from: location }} />;
   }
 
-  // Si recibimos prop `role` y no coincide, redirigimos al login
+  // Validación individual
   if (role && user.role !== role) {
     return <Navigate to="/" replace />;
   }
 
-  // Si recibimos prop `roles` (array) y el rol del usuario no está incluido, redirigimos
+  // Validación múltiple
   if (roles && !roles.includes(user.role)) {
     return <Navigate to="/" replace />;
   }
 
-  // Si pasa todas las validaciones, renderizamos el hijo
   return children;
 }

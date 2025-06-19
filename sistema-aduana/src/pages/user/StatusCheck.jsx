@@ -1,4 +1,3 @@
-// src/pages/user/StatusCheck.jsx
 import { useState } from 'react';
 
 const StatusCheck = () => {
@@ -11,11 +10,13 @@ const StatusCheck = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">Consultar estado de trámite</h2>
+    <div className="p-6 bg-white dark:bg-gray-800 rounded shadow-md max-w-xl mx-auto mt-10">
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
+        Consultar estado de trámite
+      </h2>
       <div className="flex gap-4 items-center">
         <input
-          className="border px-3 py-2 rounded"
+          className="flex-1 border px-3 py-2 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           placeholder="Número de trámite"
           value={folio}
           onChange={e => setFolio(e.target.value)}
@@ -28,8 +29,8 @@ const StatusCheck = () => {
         </button>
       </div>
       {estado && (
-        <p className="mt-4">
-          Estado del trámite {folio}: <strong>{estado}</strong>
+        <p className="mt-4 text-gray-800 dark:text-gray-200">
+          Estado del trámite <strong>{folio}</strong>: {estado}
         </p>
       )}
     </div>

@@ -9,9 +9,9 @@ export default function SettingsAdmin() {
 
   // Accessibility settings
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
-  const [scale, setScale] = useState(
-    parseInt(localStorage.getItem('uiScale'), 10) || 100
-  );
+  const storedScale = parseInt(localStorage.getItem('uiScale'), 10);
+  const [scale, setScale] = useState(!isNaN(storedScale) ? storedScale : 100);
+
   const [contrast, setContrast] = useState(
     parseFloat(localStorage.getItem('contrast')) || 1
   );

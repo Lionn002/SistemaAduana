@@ -11,7 +11,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
+      <h1 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Dashboard</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, idx) => (
           <div

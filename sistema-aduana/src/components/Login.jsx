@@ -6,16 +6,16 @@ import { users } from '../data/users';
 import logo from '../assets/logo_aduanas_chile.png';
 
 export default function Login() {
-  const [rut, setRut] = useState('');
+  const [useRut, setUseRut] = useState(true);
+  const [inputValue, setInputValue] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({ rut: '', password: '', auth: '' });
+  const [errors, setErrors] = useState({ input: '', password: '', auth: '' });
   const [captchaText, setCaptchaText] = useState('');
   const [captchaInput, setCaptchaInput] = useState('');
   const [captchaError, setCaptchaError] = useState('');
   const canvasRef = useRef(null);
   const navigate = useNavigate();
 
-  // Genera texto aleatorio para captcha
   const generateCaptcha = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let text = '';
@@ -57,26 +57,19 @@ export default function Login() {
   useEffect(generateCaptcha, []);
   useEffect(drawCaptcha, [captchaText]);
 
-  // Permitir solo dígitos y K/k al final
-  const handleRutKeyDown = e => {
-    const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab'];
-    if (allowed.includes(e.key)) return;
-    const { value, selectionStart } = e.target;
-    if (/[0-9]/.test(e.key)) return;
-    if (/^[kK]$/.test(e.key) && (value.match(/\d/g) || []).length >= 7 && selectionStart === value.length) return;
-    e.preventDefault();
+  const handleInputChange = e => {
+    setInputValue(e.target.value);
+    setErrors(prev => ({ ...prev, input: '' }));
   };
 
-  const handleRutChange = e => {
-    setRut(e.target.value);
-    setErrors(prev => ({ ...prev, rut: '' }));
-  };
-
-  const handleRutBlur = () => {
-    if (rut) {
-      const formatted = format(rut);
-      setRut(formatted);
-      setErrors(prev => ({ ...prev, rut: validate(formatted) ? '' : 'Formato de RUT inválido' }));
+  const handleInputBlur = () => {
+    if (useRut && inputValue) {
+      const formatted = format(inputValue);
+      setInputValue(formatted);
+      setErrors(prev => ({ ...prev, input: validate(formatted) ? '' : 'Formato de RUT inválido' }));
+    } else if (!useRut && inputValue) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setErrors(prev => ({ ...prev, input: emailRegex.test(inputValue) ? '' : 'Correo inválido' }));
     }
   };
 
@@ -93,21 +86,35 @@ export default function Login() {
 
   const handleLogin = () => {
     setErrors(prev => ({ ...prev, auth: '' }));
-    const user = users.find(u => u.rut === rut && u.password === password);
-    if (!user) return setErrors(prev => ({ ...prev, auth: 'Credenciales incorrectas' }));
+    const user = users.find(u =>
+      useRut ? u.rut === inputValue : u.email === inputValue
+    );
+    if (!user || user.password !== password)
+      return setErrors(prev => ({ ...prev, auth: 'Credenciales incorrectas' }));
     if (captchaError) return;
+
     localStorage.setItem('user', JSON.stringify(user));
-    if (['admin','PDI','SAG','ADUANA'].includes(user.role)) {
-      navigate('/admin-code', { state: { user } });
+
+    if (['admin', 'PDI', 'SAG', 'ADUANA'].includes(user.role)) {
+      navigate('/admin-code');
+    } else if (user.role === 'usuario') {
+      navigate('/usuario');
     } else {
-      navigate('/usuario', { state: { user } });
+      navigate('/');
     }
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (!rut) return setErrors(prev => ({ ...prev, rut: 'RUT obligatorio' }));
-    if (!validate(rut)) return setErrors(prev => ({ ...prev, rut: 'RUT inválido' }));
+    if (!inputValue)
+      return setErrors(prev => ({ ...prev, input: useRut ? 'RUT obligatorio' : 'Correo obligatorio' }));
+    if (useRut && !validate(inputValue))
+      return setErrors(prev => ({ ...prev, input: 'RUT inválido' }));
+    if (!useRut) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(inputValue))
+        return setErrors(prev => ({ ...prev, input: 'Correo inválido' }));
+    }
     if (!password) return setErrors(prev => ({ ...prev, password: 'Contraseña obligatoria' }));
     if (!captchaInput) return setCaptchaError('Ingrese el captcha');
     if (captchaError) return;
@@ -122,19 +129,35 @@ export default function Login() {
         </div>
         <h1 className="text-center text-lg font-semibold text-primary mb-6">Servicio Nacional de Aduanas</h1>
 
+        <div className="flex items-center justify-between mb-3">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Ingresar con: {useRut ? 'RUT' : 'Correo'}
+        </span>
+        <label className="relative inline-flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={!useRut}
+            onChange={() => setUseRut(!useRut)}
+            className="sr-only peer"
+          />
+          <div className="w-14 h-7 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-secondary dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-600 peer-checked:bg-blue-600 transition duration-300">
+          </div>
+          <div className="absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform duration-300 peer-checked:translate-x-7"></div>
+        </label>
+      </div>
         <div className="space-y-4">
           <div>
             <input
               type="text"
-              placeholder="Ingrese RUT"
-              value={rut}
-              onKeyDown={handleRutKeyDown}
-              onChange={handleRutChange}
-              onBlur={handleRutBlur}
+              placeholder={useRut ? 'Ingrese RUT' : 'Ingrese correo'}
+              value={inputValue}
+              onChange={handleInputChange}
+              onBlur={handleInputBlur}
               className="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded px-4 py-2"
             />
-            {errors.rut && <p className="text-red-500 text-sm mt-1">{errors.rut}</p>}
+            {errors.input && <p className="text-red-500 text-sm mt-1">{errors.input}</p>}
           </div>
+
           <div>
             <input
               type="password"
@@ -145,12 +168,14 @@ export default function Login() {
             />
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
+
           <div className="flex items-center space-x-4">
             <canvas ref={canvasRef} width={140} height={50} className="border border-gray-300 rounded" />
             <button type="button" onClick={generateCaptcha} className="text-sm text-secondary underline">
               Recargar
             </button>
           </div>
+
           <div>
             <input
               type="text"
@@ -162,6 +187,7 @@ export default function Login() {
             />
             {captchaError && <p className="text-red-500 text-sm mt-1">{captchaError}</p>}
           </div>
+
           <button
             type="submit"
             className="w-full bg-secondary dark:bg-secondary/80 text-white py-2 rounded-lg hover:bg-secondary/90 transition"
@@ -170,6 +196,7 @@ export default function Login() {
           </button>
           {errors.auth && <p className="text-red-500 text-sm text-center mt-2">{errors.auth}</p>}
         </div>
+
         <div className="text-center mt-4">
           <Link
             to="/olvide-contrasena"

@@ -1,18 +1,21 @@
 // src/layouts/UserLayout.jsx
 import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { FiLogOut, FiSettings } from 'react-icons/fi';
+import {
+  FiLogOut, FiSettings, FiHelpCircle, FiFileText, FiHome,
+  FiSearch, FiClipboard, FiTruck, FiBell, FiList
+} from 'react-icons/fi';
 import logo from '../assets/logo_aduanas_chile.png';
 
 const navItems = [
-  { to: '', label: 'Inicio' },
-  { to: 'consulta-estado', label: 'Consultar estado de trámites' },
-  { to: 'declarar-alimentos', label: 'Declarar Alimentos' },
-  { to: 'declarar-vehiculo', label: 'Declarar Vehículo' },
-  { to: 'declarar-menor', label: 'Declarar Menor' },
-  { to: 'historial', label: 'Historial de Declaraciones' },
-  { to: 'alertas', label: 'Alertas' },
-  { to: 'mas-tramites', label: 'Más trámites' }
+  { to: '', label: 'Inicio', icon: <FiHome className="mr-2" /> },
+  { to: 'consulta-estado', label: 'Consultar estado', icon: <FiSearch className="mr-2" /> },
+  { to: 'declarar-alimentos', label: 'Declarar Alimentos', icon: <FiClipboard className="mr-2" /> },
+  { to: 'declarar-vehiculo', label: 'Declarar Vehículo', icon: <FiTruck className="mr-2" /> },
+  { to: 'declarar-menor', label: 'Declarar Menor', icon: <FiClipboard className="mr-2" /> },
+  { to: 'historial', label: 'Historial', icon: <FiList className="mr-2" /> },
+  { to: 'alertas', label: 'Alertas', icon: <FiBell className="mr-2" /> },
+  { to: 'mas-tramites', label: 'Más trámites', icon: <FiFileText className="mr-2" /> }
 ];
 
 export default function UserLayout() {
@@ -30,24 +33,43 @@ export default function UserLayout() {
         <div className="flex items-center justify-center h-24 p-4">
           <img src={logo} alt="Logo Aduanas" className="w-56 h-auto" />
         </div>
+
         <nav className="flex-1 overflow-y-auto">
-          {navItems.map(({ to, label }) => (
+          {navItems.map(({ to, label, icon }) => (
             <NavLink
               key={to}
               to={to === '' ? '/usuario' : `/usuario/${to}`}
               end={to === ''}
               className={({ isActive }) =>
-                `block px-4 py-3 text-sm ${
+                `flex items-center px-4 py-3 text-sm transition ${
                   isActive
                     ? 'bg-primary text-white'
-                    : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`
               }
             >
+              {icon}
               {label}
             </NavLink>
           ))}
         </nav>
+
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <NavLink
+            to="/usuario/ayuda"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-3 text-sm rounded ${
+                isActive
+                  ? 'bg-primary text-white'
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`
+            }
+          >
+            <FiHelpCircle className="mr-2" />
+            Ayuda
+          </NavLink>
+        </div>
+
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
           <NavLink
             to="/usuario/ajustes"
@@ -55,7 +77,7 @@ export default function UserLayout() {
               `flex items-center px-4 py-3 text-sm rounded ${
                 isActive
                   ? 'bg-primary text-white'
-                  : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-700'
               }`
             }
           >
@@ -63,6 +85,7 @@ export default function UserLayout() {
             Ajustes
           </NavLink>
         </div>
+
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
           <button
             onClick={handleLogout}

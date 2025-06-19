@@ -1,3 +1,4 @@
+// src/App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
@@ -9,8 +10,10 @@ import AdminCode from './pages/AdminCode';
 
 // Layouts
 import AdminLayout from './layouts/AdminLayout';
-import FuncionarioLayout from './layouts/FuncionarioLayout';
 import UserLayout from './layouts/UserLayout';
+import PDILayout from './layouts/PDILayout';
+import SAGLayout from './layouts/SAGLayout';
+import AduanaLayout from './layouts/AduanaLayout';
 
 // Admin pages
 import AdminDashboard from './pages/AdminDashboard';
@@ -24,22 +27,26 @@ import NewDocument from './pages/user/NewDocument';
 import StatusCheck from './pages/user/StatusCheck';
 import Alerts from './pages/user/Alerts';
 import SettingsUser from './pages/user/Settings';
+import MasTramites from './pages/user/MasTramites';
+import FormularioJurada from './pages/user/FormularioJurada';
+import Adjuntos from './pages/user/Adjuntos';
+import Ayuda from './pages/user/Ayuda';
 
-// Funcionario pages
+// Funcionario comunes
 import FuncionarioDashboard from './components/FuncionarioDashboard';
-import Inspecciones from './pages/funcionario/Inspecciones';
-import InspeccionDetail from './pages/funcionario/InspeccionDetail';
-import ReportesPDI from './pages/funcionario/ReportesPDI';
-import Certificaciones from './pages/funcionario/Certificaciones';
-import ReportesSAG from './pages/funcionario/ReportesSAG';
-import Cargas from './pages/funcionario/Cargas';
-import Seguimiento from './pages/funcionario/Seguimiento';
 import RegistroPersona from './pages/funcionario/RegistroPersona';
 import RegistroVehiculo from './pages/funcionario/RegistroVehiculo';
 import EscaneoQR from './pages/funcionario/EscaneoQR';
 import Informes from './pages/funcionario/Informes';
 import SettingsFuncionario from './pages/funcionario/Settings';
 import RegistroMenores from './pages/funcionario/RegistroMenores';
+import Cargas from './pages/funcionario/Cargas';
+import Seguimiento from './pages/funcionario/Seguimiento';
+
+// Documentos compartidos
+import Protocolo from './pages/docs/protocolo';
+import Manual from './pages/docs/manual';
+import Reporte from './pages/docs/reporte';
 
 // Declaraciones RF09
 import DeclaracionAlimentos from './pages/declaraciones/DeclaracionAlimentos';
@@ -74,12 +81,14 @@ function App() {
         <Route path="nueva-declaracion" element={<NewDocument />} />
         <Route path="alertas" element={<Alerts />} />
         <Route path="ajustes" element={<SettingsUser />} />
-
-        {/* Declaraciones RF09 (Usuario) */}
         <Route path="declarar-alimentos" element={<DeclaracionAlimentos />} />
         <Route path="declarar-vehiculo" element={<DeclaracionVehiculoPDI />} />
         <Route path="declarar-menor" element={<DeclaracionMenorPDI />} />
         <Route path="historial" element={<HistorialDeclaraciones />} />
+        <Route path="formulario-jurada" element={<FormularioJurada />} />
+        <Route path="adjuntos" element={<Adjuntos />} />
+        <Route path="ayuda" element={<Ayuda />} />
+        <Route path="mas-tramites" element={<MasTramites />} />
       </Route>
 
       {/* Admin */}
@@ -97,36 +106,73 @@ function App() {
         <Route path="ajustes" element={<SettingsAdmin />} />
       </Route>
 
-      {/* Funcionario */}
+      {/* PDI */}
       <Route
-        path="/funcionario/*"
+        path="/funcionario-pdi/*"
         element={
-          <ProtectedRoute roles={['PDI','SAG','ADUANA']}>
-            <FuncionarioLayout />
+          <ProtectedRoute role="PDI">
+            <PDILayout />
           </ProtectedRoute>
         }
       >
         <Route index element={<FuncionarioDashboard />} />
         <Route path="registro-persona" element={<RegistroPersona />} />
         <Route path="registro-menores" element={<RegistroMenores />} />
+        <Route path="declaracion-vehiculo" element={<DeclaracionVehiculoPDI />} />
+        <Route path="revision-alimentos" element={<RevisionAlimentos />} />
+        <Route path="historial-declaraciones" element={<HistorialDeclaraciones />} />
+        <Route path="escaneo-qr" element={<EscaneoQR />} />
+        <Route path="informes" element={<Informes />} />
+        <Route path="ajustes" element={<SettingsFuncionario />} />
+        <Route path="docs/protocolo" element={<Protocolo />} />
+        <Route path="docs/manual" element={<Manual />} />
+        <Route path="docs/reporte" element={<Reporte />} />
+      </Route>
+
+      {/* SAG */}
+      <Route
+        path="/funcionario-sag/*"
+        element={
+          <ProtectedRoute role="SAG">
+            <SAGLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<FuncionarioDashboard />} />
+        <Route path="registro-persona" element={<RegistroPersona />} />
+        <Route path="declaracion-alimentos" element={<DeclaracionAlimentos />} />
+        <Route path="revision-alimentos" element={<RevisionAlimentos />} />
+        <Route path="historial-declaraciones" element={<HistorialDeclaraciones />} />
+        <Route path="escaneo-qr" element={<EscaneoQR />} />
+        <Route path="informes" element={<Informes />} />
+        <Route path="ajustes" element={<SettingsFuncionario />} />
+        <Route path="docs/protocolo" element={<Protocolo />} />
+        <Route path="docs/manual" element={<Manual />} />
+        <Route path="docs/reporte" element={<Reporte />} />
+      </Route>
+
+      {/* ADUANA */}
+      <Route
+        path="/funcionario-aduana/*"
+        element={
+          <ProtectedRoute role="ADUANA">
+            <AduanaLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<FuncionarioDashboard />} />
+        <Route path="registro-persona" element={<RegistroPersona />} />
         <Route path="registro-vehiculo" element={<RegistroVehiculo />} />
-        <Route path="inspecciones" element={<Inspecciones />} />
-        <Route path="inspecciones/:id" element={<InspeccionDetail />} />
-        <Route path="reportes-pdi" element={<ReportesPDI />} />
-        <Route path="certificaciones" element={<Certificaciones />} />
-        <Route path="reportes-sag" element={<ReportesSAG />} />
         <Route path="cargas" element={<Cargas />} />
         <Route path="seguimiento" element={<Seguimiento />} />
         <Route path="escaneo-qr" element={<EscaneoQR />} />
         <Route path="informes" element={<Informes />} />
         <Route path="ajustes" element={<SettingsFuncionario />} />
-
-        {/* Declaraciones RF09 (Funcionario) */}
-        <Route path="declaracion-alimentos" element={<DeclaracionAlimentos />} />
-        <Route path="declaracion-vehiculo" element={<DeclaracionVehiculoPDI />} />
-        <Route path="revision-alimentos" element={<RevisionAlimentos />} />
-        <Route path="historial-declaraciones" element={<HistorialDeclaraciones />} />
+        <Route path="docs/protocolo" element={<Protocolo />} />
+        <Route path="docs/manual" element={<Manual />} />
+        <Route path="docs/reporte" element={<Reporte />} />
       </Route>
+        
     </Routes>
   );
 }

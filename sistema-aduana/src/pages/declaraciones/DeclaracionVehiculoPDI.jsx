@@ -1,38 +1,36 @@
-// src/pages/declaraciones/DeclaracionVehiculoPDI.jsx
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { format as formatRut, clean } from 'rut.js';
 
 export default function DeclaracionVehiculoPDI() {
   const [form, setForm] = useState({
-    nombre: '',
-    rut: '',
-    correo: '',
-    patente: '',
-    marca: '',
-    modelo: '',
-    anio: '',
-    fechaInicio: null,
-    fechaFin: null
+    nombre: '', rut: '', correo: '', patente: '', marca: '', modelo: '', año: '', fechaInicio: null, fechaFin: null
   });
-
+  const [errors, setErrors] = useState({});
   const [enviado, setEnviado] = useState(false);
 
   const handleChange = e => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    const isRut = name === 'rut';
+    const cleaned = clean(value);
+    if (isRut && cleaned.length > 9) return;
+    const formatted = isRut ? formatRut(value) : value;
+    setForm(prev => ({ ...prev, [name]: formatted }));
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-
-    const campos = Object.values(form);
-    if (campos.some(c => c === '' || c === null)) {
-      return alert("Por favor completa todos los campos.");
-    }
-
+    const nuevosErrores = {};
+    Object.entries(form).forEach(([campo, valor]) => {
+      if (valor === '' || valor === null) nuevosErrores[campo] = 'Este campo es obligatorio.';
+    });
+    setErrors(nuevosErrores);
+    if (Object.keys(nuevosErrores).length > 0) return;
     console.log("Formulario de vehículo enviado:", { ...form, estado: "en proceso" });
     setEnviado(true);
+    setForm({ nombre: '', rut: '', correo: '', patente: '', marca: '', modelo: '', año: '', fechaInicio: null, fechaFin: null });
   };
 
   return (
@@ -42,66 +40,37 @@ export default function DeclaracionVehiculoPDI() {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Datos personales */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            name="nombre"
-            placeholder="Nombre completo"
-            value={form.nombre}
-            onChange={handleChange}
-            className="px-3 py-2 border rounded dark:bg-gray-700 dark:text-white"
-          />
-          <input
-            name="rut"
-            placeholder="RUT"
-            value={form.rut}
-            onChange={handleChange}
-            className="px-3 py-2 border rounded dark:bg-gray-700 dark:text-white"
-          />
-          <input
-            name="correo"
-            type="email"
-            placeholder="Correo electrónico"
-            value={form.correo}
-            onChange={handleChange}
-            className="px-3 py-2 border rounded dark:bg-gray-700 dark:text-white"
-          />
+          {['nombre', 'rut', 'correo'].map((name, idx) => (
+            <div key={idx}>
+              <input
+                name={name}
+                placeholder={name === 'correo' ? 'Correo electrónico' : name === 'rut' ? 'RUT' : 'Nombre completo'}
+                value={form[name]}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded dark:bg-gray-700 dark:text-white"
+              />
+              {errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]}</p>}
+            </div>
+          ))}
         </div>
 
-        {/* Datos del vehículo */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            name="patente"
-            placeholder="Patente"
-            value={form.patente}
-            onChange={handleChange}
-            className="px-3 py-2 border rounded dark:bg-gray-700 dark:text-white"
-          />
-          <input
-            name="marca"
-            placeholder="Marca"
-            value={form.marca}
-            onChange={handleChange}
-            className="px-3 py-2 border rounded dark:bg-gray-700 dark:text-white"
-          />
-          <input
-            name="modelo"
-            placeholder="Modelo"
-            value={form.modelo}
-            onChange={handleChange}
-            className="px-3 py-2 border rounded dark:bg-gray-700 dark:text-white"
-          />
-          <input
-            name="anio"
-            placeholder="Año"
-            value={form.anio}
-            type="number"
-            onChange={handleChange}
-            className="px-3 py-2 border rounded dark:bg-gray-700 dark:text-white"
-          />
+          {['patente', 'marca', 'modelo', 'año'].map((name, idx) => (
+            <div key={idx}>
+              <input
+                name={name}
+                placeholder={name.charAt(0).toUpperCase() + name.slice(1)}
+                value={form[name]}
+                type={name === 'año' ? 'number' : 'text'}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded dark:bg-gray-700 dark:text-white"
+              />
+              {errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]}</p>}
+            </div>
+          ))}
         </div>
 
-        {/* Fechas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha inicio permiso</label>
@@ -112,6 +81,7 @@ export default function DeclaracionVehiculoPDI() {
               dateFormat="dd/MM/yyyy"
               placeholderText="DD/MM/AAAA"
             />
+            {errors.fechaInicio && <p className="text-red-500 text-sm mt-1">{errors.fechaInicio}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha fin permiso</label>
@@ -122,13 +92,11 @@ export default function DeclaracionVehiculoPDI() {
               dateFormat="dd/MM/yyyy"
               placeholderText="DD/MM/AAAA"
             />
+            {errors.fechaFin && <p className="text-red-500 text-sm mt-1">{errors.fechaFin}</p>}
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="bg-secondary text-white px-6 py-2 rounded hover:bg-secondary/90"
-        >
+        <button type="submit" className="bg-secondary text-white px-6 py-2 rounded hover:bg-secondary/90">
           Enviar declaración
         </button>
 

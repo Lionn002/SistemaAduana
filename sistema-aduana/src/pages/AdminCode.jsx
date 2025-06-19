@@ -1,42 +1,42 @@
 // src/pages/AdminCode.jsx
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo_aduanas_chile.png';
 
 export default function AdminCode() {
-  const { state } = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [inputCode, setInputCode] = useState('');
   const [generatedCode, setGeneratedCode] = useState('');
 
   useEffect(() => {
-    const locationUser = state?.user;
-    const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
-    const currentUser = locationUser || storedUser;
+    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
 
-    // Solo admin y funcionarios pueden acceder
-    if (!currentUser || !['admin','PDI','SAG','ADUANA'].includes(currentUser.role)) {
+    if (!currentUser || !['admin', 'PDI', 'SAG', 'ADUANA'].includes(currentUser.role)) {
       return navigate('/');
     }
 
-    localStorage.setItem('user', JSON.stringify(currentUser));
     setUser(currentUser);
 
     // Generar código de 6 dígitos
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     console.log('Código generado:', code);
     setGeneratedCode(code);
-  }, [state, navigate]);
+  }, [navigate]);
 
   if (!user) return null;
 
   const handleVerify = () => {
     if (inputCode === generatedCode) {
+      localStorage.setItem('user', JSON.stringify(user)); // reafirma la sesión
       if (user.role === 'admin') {
-        navigate('/admin', { state: { user } });
-      } else {
-        navigate('/funcionario', { state: { user } });
+        navigate('/admin');
+      } else if (user.role === 'PDI') {
+        navigate('/funcionario-pdi');
+      } else if (user.role === 'SAG') {
+        navigate('/funcionario-sag');
+      } else if (user.role === 'ADUANA') {
+        navigate('/funcionario-aduana');
       }
     } else {
       alert('Código incorrecto, inténtalo de nuevo');
