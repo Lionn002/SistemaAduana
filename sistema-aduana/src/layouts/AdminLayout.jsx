@@ -24,7 +24,7 @@ export default function AdminLayout() {
       <aside className="w-64 bg-[#0b1f3a] dark:bg-gray-800 text-white flex flex-col justify-between flex-shrink-0">
         <div>
           <div className="p-6 flex justify-center">
-            <img src={logo} alt="Logo Aduanas" className="w-20 h-20" />
+            <img src={logo} alt="Logo Aduanas" className="w-65 h-30" />
           </div>
           <nav className="px-4 space-y-2">
             <NavLink
